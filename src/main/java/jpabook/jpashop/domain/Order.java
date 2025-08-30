@@ -1,7 +1,6 @@
 package jpabook.jpashop.domain;
 
 import jakarta.persistence.*;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,26 +12,24 @@ import java.util.List;
 @Table(name = "orders")
 @Getter @Setter
 public class Order {
+
     @Id @GeneratedValue
     @Column(name = "order_id")
-    private Long Id;
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id") // FK : member_id가 된다는 뜻, 내가 연관관계 주인이야
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToOne
-    @JoinColumn(name = "delivery_id") // 1:1 관계에선 액세스 많이 하는 곳에 FK 설정하기
-    private Delivery delivery = new Delivery();
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "delivery_id")
+    private Delivery delivery;
 
-    private LocalDateTime orderDate; // 주문 시간
+    private LocalDateTime orderDate;
 
-    @Enumerated(EnumType.STRING) // enum은 Enumerated 어노테이션 추가 , 꼭 STRING 으로 쓰시오!
-    private Orderstatus orderStatus; // 주문 상태 [ORDER, CANCLE]
-
-
-
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 }
